@@ -3,18 +3,16 @@ package vilite;
 public class MyLinkedList implements ILinkedList {
 
 	private Node top;
-	private Node current;
-	private Node last;
 
 	public MyLinkedList() {
-		top = current = last = null;
+		top = null;
 	}
 
 	@Override
 	public void add(String element) {
 
 		if(top == null) 
-			top = current = last = new Node(element, null);
+			top = new Node(element, null);
 
 		else {
 			Node temp = top;
@@ -24,15 +22,15 @@ public class MyLinkedList implements ILinkedList {
 			}
 
 			temp.setNext((Node) new Node(element, null));
-
-			current = last = (Node) temp.getNext();
 		}
 	}
 
 	@Override
 	public void add(int index, String element) {
-		if(top == null)
-			top = current = last = new Node(element, null);
+		if(top == null) {
+			top = new Node(element, null);
+			return;
+		}
 
 		else {
 			
@@ -40,30 +38,77 @@ public class MyLinkedList implements ILinkedList {
 				Node temp = (Node) top.getNext();
 				temp.setData(element);
 				top.setNext((Node) temp);
-			}
-
-			else if(index == this.size()) {
-				this.add(element);
+				return;
 			}
 
 			else {
 				Node temp = top;
-				for(int i = 0; i < index; i++) {
-					if(temp.getNext() != null)
+				
+				for(int i = 1; i < (index - 1); i++) {
+					if(temp.getNext() != null) {
+						temp = (Node) temp.getNext();
+					}
+					else {
+						this.add(element);
+						return;
+					}
 				}
+				
+				temp.setNext((INode) new Node(element, (Node) temp.getNext()));
+				return;
 			}
 		}
 	}
 
 	@Override
 	public String remove(int index) {
-		// TODO Auto-generated method stub
+		//Remember to call isEmpty() before calling this because I will assume the list is not empty
+		
+		//Case 1: Top element (index of 1)
+		if(index == 1) {
+			Node temp = top;
+			top = (Node) temp.getNext();
+			temp.setNext(null);
+		}
+		
+		//Case 2: All other elements
+		else {
+			
+			Node temp = top;
+			
+			for(int i = 1; i < (index - 1); i++) {
+				if(temp.getNext() != null) {
+					temp = (Node) temp.getNext();
+				}
+				
+				temp.setNext(temp.getNext().getNext());
+			}
+		}
+		
 		return null;
 	}
 
 	@Override
 	public String get(int index) {
-
+		if(top == null)
+			return null;
+		
+		if(index == 1)
+			return top.getData();
+		
+		else {
+			Node temp = top;
+			
+			for(int i = 1; i < index; i++) {
+				if(temp.getNext() != null) {
+					temp = (Node) temp.getNext();
+				}
+				
+				return temp.getData();
+			}
+			
+		}
+		
 		return null;
 	}
 

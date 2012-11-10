@@ -1,5 +1,7 @@
 package vilite;
 
+//Comment
+
 public interface INode {
 
 	/* returns the data stored in this node */

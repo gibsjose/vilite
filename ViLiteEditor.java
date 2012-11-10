@@ -7,11 +7,11 @@ import java.util.Scanner;
 public class ViLiteEditor implements IEditor {
 
 	Scanner input;
-	
+
 	String command;
-	
+
 	int currentLine;
-	
+
 	int numLines;
 
 	MyLinkedList list;
@@ -44,31 +44,47 @@ public class ViLiteEditor implements IEditor {
 			cmd = scanner.next();
 		} catch(NoSuchElementException e) {
 			cmd = param1 = param2 = null;
+			return;
 		}
 
 		//Check for b, i, and e, which are a command followed by a sentence
-		
+
 		if(cmd.equals("b")) {
-			String sentence = scanner.nextLine();
-			
+
+			String sentence = null;
+
+			try {
+				sentence = scanner.nextLine();
+			} catch(NoSuchElementException e) {
+				System.out.println("Invalid parameter, try: b <sentence>");
+				return;
+			}
+
 			if(list.isEmpty()) {
 				insertEnd(sentence);
 				currentLine++;
 			}
 			else {
 				insertBefore(sentence);
-				currentLine--;
+				//No need to decrement currentLine
 			}
-			
+
 			numLines++;
-			
+
 			return;
 		}
-		
+
 		if(cmd.equals("i")) {
-			
-			String sentence = scanner.nextLine();
-			
+
+			String sentence = null;
+
+			try {
+				sentence = scanner.nextLine();
+			} catch(NoSuchElementException e) {
+				System.out.println("Invalid parameter, try: i <sentence>");
+				return;
+			}
+
 			if(list.isEmpty()) {
 				insertEnd(sentence);
 				currentLine++;
@@ -77,21 +93,28 @@ public class ViLiteEditor implements IEditor {
 				insertAfter(sentence);
 				currentLine++;
 			}
-			
+
 			numLines++;
-			
+
 			return;
 		}
-		
+
 		if(cmd.equals("e")) {
-			
-			String sentence = scanner.nextLine();
-			
+
+			String sentence = null;
+
+			try {
+				sentence = scanner.nextLine();
+			} catch(NoSuchElementException e) {
+				System.out.println("Invalid parameter, try: e <sentence>");
+				return;
+			}
+
 			insertEnd(sentence);
-			
+
 			numLines++;
 			currentLine = numLines;
-			
+
 			return;
 		}
 
@@ -117,52 +140,82 @@ public class ViLiteEditor implements IEditor {
 
 		if(cmd.equals("r")) {
 
+			if(!list.isEmpty())
+				if(param1 != null) {
+
+				}
+				else {
+					remove(1);
+				}
+
 		}
 
 		if(cmd.equals("d")) {
-			if(param1 == null && param2 == null) 
+
+			if(param1 == null && param2 == null) {
 				display(0, numLines);
-			
-			else if(param1 == "c" && param2 == null)
-				System.out.println("==> " + list.get(currentLine));
-			
+				return;
+			}
+
 			else {
-				//Check for non-integer parameters and display error
+
+				if(param1.equals("c") && param2 == null) {
+					if(list.isEmpty())
+						System.out.println("No data to display!");
+					else
+						System.out.println("==> " + list.get(currentLine));
+
+					return;
+				}
+
+				try {
+					int start = Integer.parseInt(param1);
+					int end = Integer.parseInt(param2);
+
+					display(start, end);
+
+					return;
+				} catch(NumberFormatException e) {
+					System.out.println("Invalid parameters, try: d # *");
+
+					return;
+				}
+
 			}
 		}
 
 		if(cmd.equals("c")) {
 
 		}
-		
+
 		if(cmd.equals("s")) {
 
 		}
-		
+
 		if(cmd.equals("l")) {
 
 		}
-		
+
 		if(cmd.equals("h")) {
 
 		}
-		
+
 		if(cmd.equals("x")) {
 
 		}
-		
+
 		if(cmd.equals("mc")) {
 
 		}
-		
+
 		if(cmd.equals("fr")) {
 
 		}
-		
+
 		if(cmd.equals("sw")) {
 
 		}
-		
+
 		if(cmd.equals("ud")) {
 
 		}
@@ -186,16 +239,16 @@ public class ViLiteEditor implements IEditor {
 	@Override
 	public String[] getLines(int beginPos, int endPos) {
 		String[] lines = {null};
-		
+
 		for(int i = beginPos; i <= endPos; i++)
 			lines[i] = list.get(i);
-		
+
 		return lines;
 	}
 
 	@Override
 	public void insertBefore(String line) {
-		list.add(currentLine, line);
+		list.add(currentLine + 1, line);
 	}
 
 	@Override
@@ -222,8 +275,7 @@ public class ViLiteEditor implements IEditor {
 
 	@Override
 	public void remove(int nbrLinesToRemove) {
-		// TODO Auto-generated method stub
-
+		list.remove(nbrLinesToRemove);
 	}
 
 	@Override
@@ -267,9 +319,11 @@ public class ViLiteEditor implements IEditor {
 		// TODO Auto-generated method stub
 
 	}
-	
+
 	private void display(int start, int end) {
 		for(int i = start; i <= end; i++) {
+			if(i > numLines)
+				return;
 			if(list.get(i) != null) {
 				if(i == currentLine)
 					System.out.println("==> \t" + list.get(i));
@@ -278,7 +332,7 @@ public class ViLiteEditor implements IEditor {
 			}
 		}
 	}
-	
+
 	public static void main (String[] args) {
 		ViLiteEditor vilite = new ViLiteEditor();
 

@@ -38,6 +38,7 @@ public class MyLinkedList implements ILinkedList {
 				Node temp = (Node) top.getNext();
 				temp.setData(element);
 				top.setNext((Node) temp);
+				
 				return;
 			}
 
@@ -50,8 +51,11 @@ public class MyLinkedList implements ILinkedList {
 					}
 					else {
 						this.add(element);
+						
 						return;
 					}
+					
+					System.out.println("Data:" + temp.getData());
 				}
 				
 				temp.setNext((INode) new Node(element, (Node) temp.getNext()));
@@ -99,10 +103,12 @@ public class MyLinkedList implements ILinkedList {
 		else {
 			Node temp = top;
 			
-			for(int i = 1; i < index; i++) {
+			for(int i = 1; i < index;) {
 				if(temp.getNext() != null) {
 					temp = (Node) temp.getNext();
 				}
+				
+				i++;
 				
 				return temp.getData();
 			}

@@ -54,8 +54,6 @@ public class MyLinkedList implements ILinkedList {
 						
 						return;
 					}
-					
-					System.out.println("Data:" + temp.getData());
 				}
 				
 				temp.setNext((INode) new Node(element, (Node) temp.getNext()));
@@ -109,13 +107,10 @@ public class MyLinkedList implements ILinkedList {
 				}
 				
 				i++;
-				
-				return temp.getData();
 			}
 			
+			return temp.getData();	
 		}
-		
-		return null;
 	}
 
 	@Override
@@ -134,7 +129,7 @@ public class MyLinkedList implements ILinkedList {
 		int size = 0;
 
 		while(temp.getNext() != null) {
-			size ++;
+			size++;
 		}
 
 		return size;
@@ -142,7 +137,6 @@ public class MyLinkedList implements ILinkedList {
 
 	@Override
 	public void clear() {
-		// TODO Auto-generated method stub
-
+		top = null;
 	}
 }

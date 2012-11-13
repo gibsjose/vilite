@@ -131,11 +131,39 @@ public class ViLiteEditor implements IEditor {
 		}
 
 		if(cmd.equals("m")) {
-
+			if(param1 != null) {
+				try {
+					int num = Integer.parseInt(param1);
+					
+					moveDown(num);
+					return;
+					
+				} catch(NumberFormatException e) {
+					System.out.println("Invalid parameters, try: m #");
+					return;
+				}
+			}
+			
+			else
+				moveDown(1);
 		}
 
 		if(cmd.equals("u")) {
-
+			if(param1 != null) {
+				try {
+					int num = Integer.parseInt(param1);
+					
+					moveUp(num);
+					return;
+					
+				} catch(NumberFormatException e) {
+					System.out.println("Invalid parameters, try: u #");
+					return;
+				}
+			}
+			
+			else
+				moveUp(1);
 		}
 
 		if(cmd.equals("r")) {
@@ -153,7 +181,7 @@ public class ViLiteEditor implements IEditor {
 		if(cmd.equals("d")) {
 
 			if(param1 == null && param2 == null) {
-				display(0, numLines);
+				display(1, numLines);
 				return;
 			}
 
@@ -185,7 +213,9 @@ public class ViLiteEditor implements IEditor {
 		}
 
 		if(cmd.equals("c")) {
-
+			clear();
+			numLines = 0;
+			currentLine = 0;
 		}
 
 		if(cmd.equals("s")) {
@@ -248,7 +278,7 @@ public class ViLiteEditor implements IEditor {
 
 	@Override
 	public void insertBefore(String line) {
-		list.add(currentLine + 1, line);
+		list.add(currentLine, line);
 	}
 
 	@Override
@@ -263,14 +293,16 @@ public class ViLiteEditor implements IEditor {
 
 	@Override
 	public void moveUp(int nbrOfPositions) {
-		// TODO Auto-generated method stub
-
+		for(int i = 0; i < nbrOfPositions; i++)
+			if(currentLine != 1)
+				currentLine--;
 	}
 
 	@Override
 	public void moveDown(int nbrOfPositions) {
-		// TODO Auto-generated method stub
-
+		for(int i = 0; i < nbrOfPositions; i++)
+			if(currentLine != numLines)
+				currentLine++;
 	}
 
 	@Override
@@ -280,8 +312,7 @@ public class ViLiteEditor implements IEditor {
 
 	@Override
 	public void clear() {
-		// TODO Auto-generated method stub
-
+		list.clear();
 	}
 
 	@Override
@@ -322,8 +353,10 @@ public class ViLiteEditor implements IEditor {
 
 	private void display(int start, int end) {
 		for(int i = start; i <= end; i++) {
+			
 			if(i > numLines)
 				return;
+			
 			if(list.get(i) != null) {
 				if(i == currentLine)
 					System.out.println("==> \t" + list.get(i));

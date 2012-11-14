@@ -33,29 +33,28 @@ public class MyLinkedList implements ILinkedList {
 		}
 
 		else {
-			
+
 			if(index == 1) {
-				Node temp = (Node) top.getNext();
-				temp.setData(element);
-				top.setNext((Node) temp);
-				
+				Node temp = new Node(element, top);
+				top = temp;
+
 				return;
 			}
 
 			else {
 				Node temp = top;
-				
+
 				for(int i = 1; i < (index - 1); i++) {
 					if(temp.getNext() != null) {
 						temp = (Node) temp.getNext();
 					}
 					else {
 						this.add(element);
-						
+
 						return;
 					}
 				}
-				
+
 				temp.setNext((INode) new Node(element, (Node) temp.getNext()));
 				return;
 			}
@@ -65,28 +64,28 @@ public class MyLinkedList implements ILinkedList {
 	@Override
 	public String remove(int index) {
 		//Remember to call isEmpty() before calling this because I will assume the list is not empty
-		
+
 		//Case 1: Top element (index of 1)
 		if(index == 1) {
 			Node temp = top;
 			top = (Node) temp.getNext();
 			temp.setNext(null);
 		}
-		
+
 		//Case 2: All other elements
 		else {
-			
+
 			Node temp = top;
-			
+
 			for(int i = 1; i < (index - 1); i++) {
 				if(temp.getNext() != null) {
 					temp = (Node) temp.getNext();
 				}
-				
+
 				temp.setNext(temp.getNext().getNext());
 			}
 		}
-		
+
 		return null;
 	}
 
@@ -94,21 +93,21 @@ public class MyLinkedList implements ILinkedList {
 	public String get(int index) {
 		if(top == null)
 			return null;
-		
+
 		if(index == 1)
 			return top.getData();
-		
+
 		else {
 			Node temp = top;
-			
+
 			for(int i = 1; i < index;) {
 				if(temp.getNext() != null) {
 					temp = (Node) temp.getNext();
 				}
-				
+
 				i++;
 			}
-			
+
 			return temp.getData();	
 		}
 	}

@@ -81,9 +81,9 @@ public class MyLinkedList implements ILinkedList {
 				if(temp.getNext() != null) {
 					temp = (Node) temp.getNext();
 				}
-
-				temp.setNext(temp.getNext().getNext());
 			}
+			
+			temp.setNext(temp.getNext().getNext());
 		}
 
 		return null;

@@ -178,6 +178,7 @@ public class ViLiteEditor implements IEditor {
 						int num = Integer.parseInt(param1);
 						
 						remove(num);
+						return;
 						
 					} catch(NumberFormatException e) {
 						System.out.println("Invalid parameters, try: r #");
@@ -187,8 +188,10 @@ public class ViLiteEditor implements IEditor {
 				
 				else {
 					remove(1);
+					return;
 				}
 			}
+			
 			else
 				return;
 
@@ -330,9 +333,8 @@ public class ViLiteEditor implements IEditor {
 
 	@Override
 	public void remove(int nbrLinesToRemove) {
-		for(int i = 0; i < nbrLinesToRemove; i++) {
-			
-			System.out.println("" + i + " " + currentLine);
+		for(int i = 0; i < nbrLinesToRemove; i++) {		
+			//System.out.println("" + i + " " + currentLine);
 			
 			if(currentLine == numLines) {
 				list.remove(currentLine);
@@ -343,7 +345,7 @@ public class ViLiteEditor implements IEditor {
 		
 			else {
 				list.remove(currentLine);
-				currentLine++;
+				//currentLine++;
 				numLines --;
 			}
 		}

@@ -1,20 +1,24 @@
 package vilite;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class ViLiteEditor implements IEditor {
 
-	Scanner input;
+	private Scanner input;
 
-	String command;
+	private String command;
 
-	int currentLine;
+	private int currentLine;
 
-	int numLines;
+	private int numLines;
 
-	MyLinkedList list;
+	private MyLinkedList list;
+
+	private boolean fileSaved;
 
 	public ViLiteEditor() {
 		input = new Scanner(System.in);
@@ -22,6 +26,7 @@ public class ViLiteEditor implements IEditor {
 		currentLine = 0;
 		numLines = 0;
 		list = new MyLinkedList();
+		fileSaved = false;
 	}
 
 	@Override
@@ -70,6 +75,7 @@ public class ViLiteEditor implements IEditor {
 			}
 
 			numLines++;
+			fileSaved = false;
 
 			return;
 		}
@@ -95,6 +101,7 @@ public class ViLiteEditor implements IEditor {
 			}
 
 			numLines++;
+			fileSaved = false;
 
 			return;
 		}
@@ -111,6 +118,7 @@ public class ViLiteEditor implements IEditor {
 			}
 
 			insertEnd(sentence);
+			fileSaved = false;
 
 			numLines++;
 			currentLine = numLines;
@@ -134,8 +142,8 @@ public class ViLiteEditor implements IEditor {
 			if(param1 != null) {
 				try {
 					int num = Integer.parseInt(param1);
-
 					moveDown(num);
+					fileSaved = false;
 					return;
 
 				} catch(NumberFormatException e) {
@@ -154,8 +162,8 @@ public class ViLiteEditor implements IEditor {
 			if(param1 != null) {
 				try {
 					int num = Integer.parseInt(param1);
-
 					moveUp(num);
+					fileSaved = false;
 					return;
 
 				} catch(NumberFormatException e) {
@@ -176,22 +184,23 @@ public class ViLiteEditor implements IEditor {
 				if(param1 != null) {
 					try {
 						int num = Integer.parseInt(param1);
-						
 						remove(num);
+						fileSaved = false;
 						return;
-						
+
 					} catch(NumberFormatException e) {
 						System.out.println("Invalid parameters, try: r #");
 						return;
 					}
 				}
-				
+
 				else {
 					remove(1);
+					fileSaved = false;
 					return;
 				}
 			}
-			
+
 			else
 				return;
 
@@ -233,13 +242,19 @@ public class ViLiteEditor implements IEditor {
 
 		if(cmd.equals("c")) {
 			clear();
+			fileSaved = false;
 			numLines = 0;
 			currentLine = 0;
 			return;
 		}
 
 		if(cmd.equals("s")) {
+			if(param1 != null)
+				save(param1);
+			else
+				System.out.println("Invalid parameters, try: s <filename>");
 
+			return;
 		}
 
 		if(cmd.equals("l")) {
@@ -252,27 +267,33 @@ public class ViLiteEditor implements IEditor {
 		}
 
 		if(cmd.equals("x")) {
-			//Check if saved or not before exiting
-			System.out.println("Goodbye!");
-			System.exit(0);
+			//Check if saved before exiting
+			if(list.isEmpty() || fileSaved) {
+				System.out.println("Goodbye!");
+				System.exit(0);
+			}
+			else {
+				System.out.println("File not saved! Please save before closing");
+				return;
+			}
 		}
 
 		if(cmd.equals("mc")) {
-
+			//Add fileSaved = false;
 		}
 
 		if(cmd.equals("fr")) {
-
+			//Add fileSaved = false; for replace only
 		}
 
 		if(cmd.equals("sw")) {
-
+			//Add fileSaved = false;
 		}
 
 		if(cmd.equals("ud")) {
-
+			//Add fileSaved = false;
 		}
-		
+
 		if(cmd != null)
 			System.out.println("Command " + cmd + " not recognized.  Type 'h' for help");
 	}
@@ -334,18 +355,15 @@ public class ViLiteEditor implements IEditor {
 	@Override
 	public void remove(int nbrLinesToRemove) {
 		for(int i = 0; i < nbrLinesToRemove; i++) {		
-			//System.out.println("" + i + " " + currentLine);
-			
 			if(currentLine == numLines) {
 				list.remove(currentLine);
 				currentLine--;
 				numLines--;
 				return;
 			}
-		
+
 			else {
 				list.remove(currentLine);
-				//currentLine++;
 				numLines --;
 			}
 		}
@@ -357,9 +375,48 @@ public class ViLiteEditor implements IEditor {
 	}
 
 	@Override
-	public void save(String filename) throws IOException {
-		// TODO Auto-generated method stub
+	public void save(String filename) {
+		String filepath = "/users/Joe/" + filename;
+		File saveFile = new File(filepath);
+		FileWriter saveFileWriter;
 
+		//Attempt to create the file writer
+		try {
+			saveFileWriter = new FileWriter(saveFile);
+		} catch (IOException e) {
+			System.out.println("Error! File could not be saved!");
+			return;
+		}
+
+		//Create the save string
+		String saveString = "";
+
+		//Populate the save string
+		if(list.isEmpty())
+			saveString = "null";
+		else {
+			saveString += "" + currentLine + "\n";
+			saveString += "" + numLines + "\n";
+
+			for(int i = 1; i <= numLines; i++) {
+				saveString += list.get(i) + "\n";
+			}
+		}
+
+		//Attempt to write to the file and close it
+		try {
+			saveFileWriter.write(saveString);
+			saveFileWriter.close();
+
+			//The file was successfully saved
+			fileSaved = true;
+
+			return;
+		}
+		catch(IOException e) {
+			System.out.println("Error! File could not be saved!");
+			return;
+		}
 	}
 
 	@Override

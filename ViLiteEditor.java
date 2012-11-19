@@ -228,7 +228,13 @@ public class ViLiteEditor implements IEditor {
 					int start = Integer.parseInt(param1);
 					int end = Integer.parseInt(param2);
 
-					display(start, end);
+					if(start <= end)
+						if(start > 0)
+							display(start, end);
+						else
+							System.out.println("Invalid parameters, try: d # *, where # starts at '1'");
+					else
+						System.out.println("Invalid parameters, try: d # *, where * is greater than #");
 
 					return;
 				} catch(NumberFormatException e) {
@@ -259,6 +265,15 @@ public class ViLiteEditor implements IEditor {
 
 		if(cmd.equals("l")) {
 
+			//Make a save of the current list in case of corruption
+			save(".viliteBackup");
+
+			if(param1 != null)
+				load(param1);
+			else
+				System.out.println("Invalid parameters, try: l <filename>");
+
+			return;
 		}
 
 		if(cmd.equals("h")) {
@@ -279,7 +294,37 @@ public class ViLiteEditor implements IEditor {
 		}
 
 		if(cmd.equals("mc")) {
-			//Add fileSaved = false;
+
+			if(param1 != null) {
+				if(param1.equals("$")) {
+					moveCurrentLineTo(numLines);
+					fileSaved = false;
+					return;
+				}
+
+				else {
+					try {
+						int line = Integer.parseInt(param1);
+
+						if(line <= 0 || line > numLines) {
+							System.out.println("Invalid parameters, try: mc #, where # starts at '1'");
+							return;
+						}
+						else {
+							moveCurrentLineTo(line);
+							fileSaved = false;
+							return;
+						}
+					} catch(NumberFormatException e) {
+						System.out.println("Invalid parameters, try: mc # or mc $");
+						return;
+					}
+				}
+			}
+			else {
+				System.out.println("Invalid parameters, try: mc # or mc $");
+				return;
+			}
 		}
 
 		if(cmd.equals("fr")) {
@@ -392,9 +437,12 @@ public class ViLiteEditor implements IEditor {
 		String saveString = "";
 
 		//Populate the save string
-		if(list.isEmpty())
-			saveString = "null";
+		if(list.isEmpty()) {
+			saveString += "" + 0x55 + "\n";
+			saveString += "null";
+		}
 		else {
+			saveString += "" + 0x55 + "\n";
 			saveString += "" + currentLine + "\n";
 			saveString += "" + numLines + "\n";
 
@@ -420,9 +468,77 @@ public class ViLiteEditor implements IEditor {
 	}
 
 	@Override
-	public void load(String filename) throws IOException {
-		// TODO Auto-generated method stub
+	public void load(String filename) {
 
+		String filepath = "/users/Joe/" + filename;
+		File loadFile;
+		Scanner scanner;
+
+		//Attempt to create the scanner
+		try {
+			loadFile = new File(filepath);
+			scanner = new Scanner(loadFile);
+		}
+		catch(Exception e) {
+			System.out.println("Error! File could not be loaded!");
+			return;
+		}
+
+		String tempCurrentLineS = "";
+		String tempNumLinesS = "";
+
+		int tempCurrentLine = 0;
+		int tempNumLines = 0;
+
+		int checksum = scanner.nextInt();
+
+		if(checksum == 0x55) {
+
+			list.clear();
+
+			try {
+				tempCurrentLineS = scanner.next();
+				tempNumLinesS = scanner.next();
+
+				if(tempCurrentLineS == null)
+					return;
+
+				else {
+					try{
+						tempCurrentLine = Integer.parseInt(tempCurrentLineS);
+						tempNumLines = Integer.parseInt(tempNumLinesS);
+					} 
+					catch(Exception e){
+						System.out.println("Error! File is corrupt. Reverting to previous save...");
+						load(".viliteBackup");
+						System.out.println("Done.");
+						scanner.close();
+						return;
+					}
+				}
+			}
+			catch(Exception e) {
+				//Do I need to catch anything?
+			}
+
+			//If there is another entry...
+			for(int i = 0; i < tempNumLines; i++) {
+				String temp = scanner.next();
+				insertEnd(temp);
+			}
+
+			currentLine = tempCurrentLine;
+			numLines = tempNumLines;
+			fileSaved = false;
+		}
+		else
+			System.out.println("Error! Incorrect file  type!");
+
+		//Close the file
+		scanner.close();
+
+		//Completed successfully
+		return;
 	}
 
 	@Override
@@ -433,20 +549,46 @@ public class ViLiteEditor implements IEditor {
 
 	@Override
 	public void moveCurrentLineTo(int lineNbr) {
-		// TODO Auto-generated method stub
+		
+		display(1, numLines);
+		System.out.println("\n");
+		
+		String temp = list.get(currentLine);
+		
+		System.out.println(temp + "\n");
 
+		if(lineNbr == currentLine)
+			return;
+
+		if(lineNbr == 1) {
+			list.remove(1);
+			display(1, numLines);
+			System.out.println("\n");
+			list.add(1, temp);
+			display(1, numLines);
+			System.out.println("\n");
+			return;
+		}
+
+		if(lineNbr == numLines) {
+			remove(1);
+			insertEnd(temp);
+			return;
+		}
+
+		remove(1);
+		list.add(lineNbr, temp);
+		return;
 	}
 
 	@Override
 	public void switchCurrentLineWith(int lineNbr) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void undo() {
 		// TODO Auto-generated method stub
-
 	}
 
 	private void display(int start, int end) {

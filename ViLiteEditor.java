@@ -8,32 +8,32 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 /**********************************************************************
-Program simulates a VI Editor (line editor). The program is able to 
-insert, delete, save, load, clear, display and edit a text file.  
+ViLiteEditor simulates a VI Editor (line editor). The program is able
+to insert, delete, save, load, clear, display and edit a text file.  
 Uses a current line indicator to display where in the editor the user
 is currently working. Implements the functionality of Link Lists.
 
 @author Joe Gibson, Ryan Zondervan
-@version 11/7/2012
+@version 12/5/2012
  *********************************************************************/
 public class ViLiteEditor implements IEditor {
 
-	/** Scanner for the command prompt input */
+	/** Scanner for the command input */
 	private Scanner input;
 
 	/** String for the command input */
 	private String command;
 
-	/** Current line indicator number */
+	/** Current line indicator */
 	private int currentLine;
 
-	/** Integer for the total number of lines */
+	/** Total number of lines */
 	private int numLines;
 
-	/** The Link list */
+	/** The linked list */
 	private MyLinkedList list;
 
-	/** Boolean value for whether file is saved */
+	/** Boolean value for whether or not the file is saved */
 	private boolean fileSaved;
 	
 	/** ArrayList used for undo method */
@@ -43,8 +43,8 @@ public class ViLiteEditor implements IEditor {
 	private int commandIndex;
 
 	/******************************************************************
-	Constructor for a new and blank ViLiteEditor.
-	 ******************************************************************/
+	Constructs a blank ViLiteEditor.
+	******************************************************************/
 	public ViLiteEditor() {
 		input = new Scanner(System.in);
 		command = null;
@@ -57,8 +57,8 @@ public class ViLiteEditor implements IEditor {
 	}
 
 	/******************************************************************
-	Method called to run the VI Editor and calls commands.
-	 ******************************************************************/
+	Prompts the user for command input and processes the command.
+	******************************************************************/
 	public void run() {
 		System.out.println("\nCommand:");
 		command = input.nextLine();
@@ -66,10 +66,14 @@ public class ViLiteEditor implements IEditor {
 	}
 
 	/******************************************************************
-	Loaded method that dictates commands and processes
-	commands in the appropriate manner. 	
-	@param String command the entered command
-	 ******************************************************************/
+	Processes the given string into a command. Is called by either the
+	run() method or the undo() method, hence the boolean condition.
+	Also, this method is large because it checks input for errors before
+	sending the command off to be performed. This way, each subsequent
+	method can expect good input.
+	@param the command string to be processed
+	@param if it's being called by the undo method
+	******************************************************************/
 	public void processCommand(String command, boolean undo) {
 
 		Scanner scanner = new Scanner(command);
@@ -477,37 +481,36 @@ public class ViLiteEditor implements IEditor {
 	}
 
 	/******************************************************************
-	Get method for the number of lines in the list.
-	@return int numLines 	
-	 ******************************************************************/
+	Returns the number of lines in the file.
+	@return the number of lines in the file
+	******************************************************************/
 	public int getNbrLines() {
 		return numLines;
 	}
 
 	/******************************************************************
-	Get method for the current line number.
-	@return int currentLine the current line 	
-	 ******************************************************************/
+	Returns the current line number.
+	@return the current line number 	
+	******************************************************************/
 	public int getCurrentLineNbr() {
 		return currentLine;
 	}
 
 	/******************************************************************
-	Method gets the data of the line number indicated by the user	
-	@param int lineNbr the line number
-	@return String the data in that position of the list
-	 ******************************************************************/
+	Returns the data at the specified line in the list.
+	@param the line in the list
+	@return the data at the specified line
+	******************************************************************/
 	public String getLine(int lineNbr) {
 		return list.get(lineNbr);
 	}
 
 	/******************************************************************
-	Method gets the lines from the beginning position indicated to 
-	the end position indicated by the user.
-	@param int beginPos the beginning line to dipslay
-	@param int endPos the last line to display
-	@return String[] lines the array of lines to display
-	 ******************************************************************/
+	Returns an array of data from the specified range in the list.
+	@param the starting line
+	@param the ending line
+	@return the array of data (Strings in this case)
+	******************************************************************/
 	public String[] getLines(int beginPos, int endPos) {
 		String[] lines = { null };
 
@@ -518,33 +521,34 @@ public class ViLiteEditor implements IEditor {
 	}
 
 	/******************************************************************
-	Add a line before the current line.	
-	@param String line the line to input before the current
-	 ******************************************************************/
+	Inserts a line before the current line.
+	@param the data to insert before the current line
+	******************************************************************/
 	public void insertBefore(String line) {
 		list.add(currentLine, line);
 	}
 
 	/******************************************************************
-	Add a line after the current line.
-	@param String line the line to be inserted after the current
-	 ******************************************************************/
+	Inserts a line after the current line.
+	@param the data to insert after the current line
+	******************************************************************/
 	public void insertAfter(String line) {
 		list.add((currentLine + 1), line);
 	}
 
 	/******************************************************************
-	Add a line to the end of the list. 	
-	@param String line the line to input at the end
-	 ******************************************************************/
+	Inserts a line at the end of the file.
+	@param the data to insert at the end of the file
+	******************************************************************/
 	public void insertEnd(String line) {
 		list.add(line);
 	}
 
 	/******************************************************************
-	Move the current line indicator up a number of positions.	
-	@param int nbrOfPositions the number of positions to move up
-	 ******************************************************************/
+	Moves the current line indicator up a given number of lines without
+	manipulating the data in the list.
+	@param the number of lines to move up
+	******************************************************************/
 	public void moveUp(int nbrOfPositions) {
 		for (int i = 0; i < nbrOfPositions; i++)
 			if (currentLine != 1)
@@ -552,9 +556,10 @@ public class ViLiteEditor implements IEditor {
 	}
 
 	/******************************************************************
-	Move the current line indicator down a number of positions.	
-	@param int nbrOfPositions the number of positions to move down
-	 ******************************************************************/
+	Moves the current line indicator down a given number of lines without
+	manipulating the data in the list.
+	@param the number of lines to move down
+	******************************************************************/
 	public void moveDown(int nbrOfPositions) {
 		for (int i = 0; i < nbrOfPositions; i++)
 			if (currentLine != numLines)
@@ -562,11 +567,10 @@ public class ViLiteEditor implements IEditor {
 	}
 
 	/******************************************************************
-	Remove functionality for the command "r #". Called to remove the 
-	current line and the number of lines after the current.	
-	@param int nbrLinesToRemove the number of lines to remove after
-		the current
-	 ******************************************************************/
+	Removes a given number of lines starting at the current line until
+	reaching the end of the file (if applicable).
+	@param the number of lines to remove
+	******************************************************************/
 	public void remove(int nbrLinesToRemove) {
 		for (int i = 0; i < nbrLinesToRemove; i++) {
 			if (currentLine == numLines) {
@@ -584,16 +588,18 @@ public class ViLiteEditor implements IEditor {
 	}
 
 	/******************************************************************
-	Clears the buffer list completely.
-	 ******************************************************************/
+	Completely clears the list.
+	******************************************************************/
 	public void clear() {
 		list.clear();
 	}
 
 	/******************************************************************
-	Saves the edited list to a specified filepath
-	@param String filename the name of the file
-	 ******************************************************************/
+	Saves the current list to a file given a filename. Writes a '0x55'
+	to the first line so loaded files can be known to have been saved
+	correctly.
+	@param the name of the file which is to be saved
+	******************************************************************/
 	public void save(String filename) {
 		String filepath = "/users/Joe/" + filename;
 		File saveFile = new File(filepath);
@@ -640,9 +646,13 @@ public class ViLiteEditor implements IEditor {
 	}
 
 	/******************************************************************
-	Loads a previous VI Editor from a user specified filename
-	@param String filename the name of the file
-	 ******************************************************************/
+	Loads a file given the filename. Checks for the '0x55' header to
+	verify the file was saved correctly, and checks for corrupt header
+	data (currentLine, numLines). If corrupt data is found while
+	loading the file, a save from immediately before the load operation
+	is loaded in as a restore save.
+	@param the name of the file which is to be loaded
+	******************************************************************/
 	public void load(String filename) {
 
 		String filepath = "/users/Joe/" + filename;
@@ -714,9 +724,11 @@ public class ViLiteEditor implements IEditor {
 	}
 
 	/******************************************************************
-	Saves the edited list to a specified filepath.
-	@param String filename the name of the file
-	 ******************************************************************/
+	Replaces all instances of a given string pattern with a second
+	given string pattern.
+	@param string pattern to be replaced
+	@param string pattern to replace the previous
+	******************************************************************/
 	public int findReplace(String str1, String str2) {
 		int numFound = 0;
 
@@ -740,9 +752,10 @@ public class ViLiteEditor implements IEditor {
 	}
 
 	/******************************************************************
-	Moves the current line indicator to the user specified line number.
-	@param int lineNbr the line to be the current line indicator
-	 ******************************************************************/
+	Moves the current line to the specified line without modifying the
+	current line indicator.
+	@param the line number to move the current line to
+	******************************************************************/
 	public void moveCurrentLineTo(int lineNbr) {
 
 		String temp = list.get(currentLine);
@@ -780,9 +793,10 @@ public class ViLiteEditor implements IEditor {
 	}
 
 	/******************************************************************
-	Switch the current line with the line indicated by the user.
-	@param int lineNbr the line number to be switched
-	 ******************************************************************/
+	Switches the current line with the specified line without modifying
+	the current line indicator.
+	@param the line number to switch the current line with
+	******************************************************************/
 	public void switchCurrentLineWith(int lineNbr) {
 
 		String destTemp = list.get(lineNbr);
@@ -814,7 +828,10 @@ public class ViLiteEditor implements IEditor {
 	}
 
 	/******************************************************************
-	Undoes the last command
+	Undoes the last command (if the last command modified anything in
+	the list) by using the saveList. Essentially this clears the current
+	list and then executes all commands in that list until the last
+	command.
 	******************************************************************/
 	public void undo() {
 		
@@ -847,10 +864,10 @@ public class ViLiteEditor implements IEditor {
 	}
 
 	/******************************************************************
-	Display the data in the lines between the user specified positions.
-	@param int start the beginning line to display
-	@param int end the last line to display
-	 ******************************************************************/
+	Displays each line of data from the list in the specified range.
+	@param the first line that is displayed
+	@param the last line that is displayed
+	******************************************************************/
 	private void display(int start, int end) {
 		for (int i = start; i <= end; i++) {
 
@@ -867,9 +884,8 @@ public class ViLiteEditor implements IEditor {
 	}
 
 	/******************************************************************
-	Display a help list. List of commands that the user can use to 
-	manipulate and edit their document.
-	 ******************************************************************/
+	Displays a list of valid commands.
+	******************************************************************/
 	public void displayHelp() {
 		System.out.println("The following are possible commands:\n"
 				+ "b <sentence> = insert line before the current line\n"
@@ -894,7 +910,16 @@ public class ViLiteEditor implements IEditor {
 				+ "ud = undo operation\n" + "x = exit the editor (if saved)");
 	}
 
-	public void saveCommand(int index, String cmd, String param1, String param2) {
+	/******************************************************************
+	Private helper method to save each command (if said command changes
+	the data in the list) and it's parameters to an array to be used
+	with the undo command.
+	@param the index of the command
+	@param the command
+	@param the first parameter
+	@param the second parameter
+	******************************************************************/
+	private void saveCommand(int index, String cmd, String param1, String param2) {
 		String paramA;
 		String paramB;
 		
@@ -914,8 +939,10 @@ public class ViLiteEditor implements IEditor {
 	}
 
 	/******************************************************************
-	Main Method to create a new running ViLiteEditor.
-	 ******************************************************************/
+	The main method which runs until the exit command is issued or a
+	fatal error occurrs.
+	@param the line arguments
+	******************************************************************/
 	public static void main(String[] args) {
 		ViLiteEditor vilite = new ViLiteEditor();
 

@@ -8,7 +8,7 @@ public interface IEditor {
 	void run();
 
 	/* processes the given editor command */
-	void processCommand(String command);
+	void processCommand(String command, boolean undo);
 
 	/* returns number of lines in the editor buffer */
 	int getNbrLines();

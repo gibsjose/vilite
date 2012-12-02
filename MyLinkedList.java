@@ -111,6 +111,28 @@ public class MyLinkedList implements ILinkedList {
 			return temp.getData();	
 		}
 	}
+	
+	public void set(int index, String data) {
+		if(top == null)
+			return;
+
+		if(index == 1)
+			top.setData(data);
+
+		else {
+			Node temp = top;
+
+			for(int i = 1; i < index;) {
+				if(temp.getNext() != null) {
+					temp = (Node) temp.getNext();
+				}
+
+				i++;
+			}
+
+			temp.setData(data);	
+		}
+	}
 
 	@Override
 	public boolean isEmpty() {

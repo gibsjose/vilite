@@ -551,7 +551,7 @@ public class ViLiteEditor implements IEditor {
 	******************************************************************/
 	public void moveUp(int nbrOfPositions) {
 		for (int i = 0; i < nbrOfPositions; i++)
-			if (currentLine != 1)
+			if (currentLine != 1 && !list.isEmpty())
 				currentLine--;
 	}
 
@@ -562,7 +562,7 @@ public class ViLiteEditor implements IEditor {
 	******************************************************************/
 	public void moveDown(int nbrOfPositions) {
 		for (int i = 0; i < nbrOfPositions; i++)
-			if (currentLine != numLines)
+			if (currentLine != numLines && !list.isEmpty())
 				currentLine++;
 	}
 

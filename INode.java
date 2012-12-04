@@ -1,7 +1,7 @@
 package vilite;
 
 /**********************************************************************
- * Interface for a node in a linklist. These commands to be overridden
+ * Interface for a node in a linklist. All commands to be overridden
  * in the Node class. 
  * 
  * @author Joe Gibson, Ryan Zondervan

@@ -41,11 +41,13 @@ public class ViLiteEditor implements IEditor {
 	
 	/** Index used for undo method */
 	private int commandIndex;
+	
 
 	/******************************************************************
 	Constructs a blank ViLiteEditor.
 	******************************************************************/
 	public ViLiteEditor() {
+		//Initialize all properties
 		input = new Scanner(System.in);
 		command = null;
 		currentLine = 0;
@@ -55,6 +57,7 @@ public class ViLiteEditor implements IEditor {
 		commandList = new ArrayList<Command>();
 		commandIndex = 0;
 	}
+	
 
 	/******************************************************************
 	Prompts the user for command input and processes the command.
@@ -62,8 +65,12 @@ public class ViLiteEditor implements IEditor {
 	public void run() {
 		System.out.println("\nCommand:");
 		command = input.nextLine();
+		
+		//False indicates that the command is NOT being called from the
+		//undo method
 		processCommand(command, false);
 	}
+	
 
 	/******************************************************************
 	Processes the given string into a command. Is called by either the
@@ -76,12 +83,16 @@ public class ViLiteEditor implements IEditor {
 	******************************************************************/
 	public void processCommand(String command, boolean undo) {
 
+		//Create the scanner to parse the command string
 		Scanner scanner = new Scanner(command);
 
+		//Initialize commands and parameters
 		String cmd = null;
 		String param1 = null;
 		String param2 = null;
 
+		//Attempt to parse the command
+		//Set all to null on exception
 		try {
 			cmd = scanner.next();
 		} catch (NoSuchElementException e) {
@@ -90,11 +101,11 @@ public class ViLiteEditor implements IEditor {
 		}
 
 		// Check for b, i, and e, which are a command followed by a sentence
-
 		if (cmd.equals("b")) {
-
+			
 			String sentence = null;
 
+			//Attempt to parse the sentence
 			try {
 				sentence = scanner.nextLine();
 			} catch (NoSuchElementException e) {
@@ -102,6 +113,8 @@ public class ViLiteEditor implements IEditor {
 				return;
 			}
 
+			//Insert the sentence in the proper position and update
+			//the current line indicator
 			if (list.isEmpty()) {
 				insertEnd(sentence);
 				currentLine++;
@@ -111,12 +124,14 @@ public class ViLiteEditor implements IEditor {
 				insertBefore(sentence);
 				if(!undo)
 					saveCommand(commandIndex++, cmd, sentence, null);
-				// No need to decrement currentLine
+				// No need to decrement currentLine here
 			}
 
+			//Update the number of lines
 			numLines++;
+			
+			//The file had been edited
 			fileSaved = false;
-
 			return;
 		}
 
@@ -124,6 +139,7 @@ public class ViLiteEditor implements IEditor {
 
 			String sentence = null;
 
+			//Attempt to parse the sentence
 			try {
 				sentence = scanner.nextLine();
 			} catch (NoSuchElementException e) {
@@ -131,6 +147,8 @@ public class ViLiteEditor implements IEditor {
 				return;
 			}
 
+			//Insert the sentence in the proper position and update
+			//the current line indicator
 			if (list.isEmpty()) {
 				insertEnd(sentence);
 				currentLine++;
@@ -143,9 +161,11 @@ public class ViLiteEditor implements IEditor {
 					saveCommand(commandIndex++, cmd, sentence, null);
 			}
 
+			//Increment the number of lines
 			numLines++;
+			
+			//The file has been edited
 			fileSaved = false;
-
 			return;
 		}
 
@@ -153,6 +173,7 @@ public class ViLiteEditor implements IEditor {
 
 			String sentence = null;
 
+			//Attempt to parse the sentence
 			try {
 				sentence = scanner.nextLine();
 			} catch (NoSuchElementException e) {
@@ -160,38 +181,56 @@ public class ViLiteEditor implements IEditor {
 				return;
 			}
 
+			//Insert the sentence at the proper position
 			insertEnd(sentence);
-			fileSaved = false;
 
+			//Increment the number of lines
 			numLines++;
+			
+			//Set the current line to the last line
 			currentLine = numLines;
 			
-			if(!undo)
-				saveCommand(commandIndex++, cmd, sentence, null);
+			//The file has been edited
+			fileSaved = false;
 			
+			if(!undo)
+				saveCommand(commandIndex++, cmd, sentence, null);			
 			return;
 		}
 
+		
+		//Attempt to parse the first parameter (if it exists)
 		try {
 			param1 = scanner.next();
 		} catch (NoSuchElementException e) {
 			param1 = param2 = null;
 		}
-
+		
+		//Attempt to parse the second parameter (if it exists)
 		try {
 			param2 = scanner.next();
 		} catch (NoSuchElementException e) {
 			param2 = null;
 		}
 
+		//'m' or 'm #' command moves the current line indicator down
 		if (cmd.equals("m")) {
+			
+			//Move down a number of times
 			if (param1 != null) {
+				
+				//Attempt to parse the parameter
 				try {
 					int num = Integer.parseInt(param1);
+					
+					//Move the current line indicator down num times
 					moveDown(num);
+					
+					//The file has been edited
 					fileSaved = false;
+					
 					if(!undo)
-						saveCommand(commandIndex++, cmd, param1, param2);
+						saveCommand(commandIndex++, cmd, param1, param2);				
 					return;
 
 				} catch (NumberFormatException e) {
@@ -200,22 +239,40 @@ public class ViLiteEditor implements IEditor {
 				}
 			}
 
+			//Move down once
 			else {
+				
+				//Move the current line indicator down one line
 				moveDown(1);
+				
+				//The file has been edited
+				fileSaved = false;
+				
 				if(!undo)
-					saveCommand(commandIndex++, cmd, param1, param2);
+					saveCommand(commandIndex++, cmd, param1, param2);			
 				return;
 			}
 		}
 
+		
+		//'u' or 'u #' command moves the current line indicator up
 		if (cmd.equals("u")) {
+			
+			//Move up a number of times
 			if (param1 != null) {
+				
+				//Attempt to parse the parameter
 				try {
 					int num = Integer.parseInt(param1);
+					
+					//Move up num times
 					moveUp(num);
+					
+					//The file has been edited
 					fileSaved = false;
+					
 					if(!undo)
-						saveCommand(commandIndex++, cmd, param1, param2);
+						saveCommand(commandIndex++, cmd, param1, param2);					
 					return;
 
 				} catch (NumberFormatException e) {
@@ -224,24 +281,43 @@ public class ViLiteEditor implements IEditor {
 				}
 			}
 
+			//Move up once
 			else {
+				
+				//Move up one time
 				moveUp(1);
+				
+				//The file has been edited
+				fileSaved = false;
+				
 				if(!undo)
-					saveCommand(commandIndex++, cmd, param1, param2);
+					saveCommand(commandIndex++, cmd, param1, param2);				
 				return;
 			}
 		}
 
+		//'r' or 'r #' removes a number of lines starting at the 
+		//current line
 		if (cmd.equals("r")) {
 
+			//If the list is not empty...
 			if (!list.isEmpty()) {
+				
+				//Remove a number of lines
 				if (param1 != null) {
+					
+					//Attempt to parse the parameter
 					try {
 						int num = Integer.parseInt(param1);
+						
+						//Remove num lines
 						remove(num);
+						
+						//The file has been edited
 						fileSaved = false;
+						
 						if(!undo)
-							saveCommand(commandIndex++, cmd, param1, param2);
+							saveCommand(commandIndex++, cmd, param1, param2);				
 						return;
 
 					} catch (NumberFormatException e) {
@@ -250,22 +326,30 @@ public class ViLiteEditor implements IEditor {
 					}
 				}
 
+				//Remove one line
 				else {
+					
+					//Remove one line
 					remove(1);
+					
+					//The file has been edited
 					fileSaved = false;
+					
 					if(!undo)
 						saveCommand(commandIndex++, cmd, param1, param2);
 					return;
 				}
 			}
 
+			//Do nothing if file is empty
 			else
 				return;
-
 		}
 
+		//'d', 'd c' or 'd # *' displays all or part of the file
 		if (cmd.equals("d")) {
 
+			//'d' displays the entire file
 			if (param1 == null && param2 == null) {
 				display(1, numLines);
 				return;
@@ -273,50 +357,66 @@ public class ViLiteEditor implements IEditor {
 
 			else {
 
+				//'d c' displays only the current line
 				if (param1.equals("c") && param2 == null) {
+					
+					//Display that the list is empty or display the
+					//current line if it exists
 					if (list.isEmpty())
 						System.out.println("No data to display!");
 					else
 						System.out.println("==> \t" + list.get(currentLine));
-
+					
 					return;
 				}
 
+				//Attempt to parse the parameters
 				try {
 					int start = Integer.parseInt(param1);
 					int end = Integer.parseInt(param2);
 
+					//Ensure good data...
 					if (start <= end)
 						if (start > 0)
+							
+							//If all is good, display the specified lines
 							display(start, end);
 						else
-							System.out
-							.println("Invalid parameters, try: d # *, where # starts at '1'");
+							System.out.println("Invalid parameters, " +
+									"try: d # *, where # starts at '1'");
 					else
 						System.out
-						.println("Invalid parameters, try: d # *, where * is greater than #");
-
+						.println("Invalid parameters, " +
+								"try: d # *, where * is greater than #");
 					return;
 				} catch (NumberFormatException e) {
 					System.out.println("Invalid parameters, try: d # *");
-
 					return;
 				}
-
 			}
 		}
 
+		//'c' command clears the file
 		if (cmd.equals("c")) {
+			
+			//Clear the list
 			clear();
+			
+			//The file has been edited
 			fileSaved = false;
-			numLines = 0;
-			currentLine = 0;
-			saveCommand(commandIndex++, cmd, param1, param2);
+			
+			if(!undo)
+				saveCommand(commandIndex++, cmd, param1, param2);
 			return;
 		}
 
+		//'s' command saves the file
 		if (cmd.equals("s")) {
+			
+			//If given a filename...
 			if (param1 != null)
+				
+				//Save the file
 				save(param1);
 			else
 				System.out.println("Invalid parameters, try: s <filename>");
@@ -324,13 +424,18 @@ public class ViLiteEditor implements IEditor {
 			return;
 		}
 
+		//'l' command loads a file
 		if (cmd.equals("l")) {
 
 			// Make a save of the current list in case of corruption
 			save(".viliteBackup");
 
+			//If given a filename...
 			if (param1 != null) {
+				
+				//Load the file
 				load(param1);
+				
 				if(!undo)
 					saveCommand(commandIndex++, cmd, param1, param2);
 			}
@@ -340,124 +445,196 @@ public class ViLiteEditor implements IEditor {
 			return;
 		}
 
+		//'h' command displays a list of commands
 		if (cmd.equals("h")) {
+			
+			//Display the list of commands
 			displayHelp();
 			return;
 		}
 
+		//'x' exits if the file is saved
 		if (cmd.equals("x")) {
-			// Check if saved before exiting
+			
+			//If saved...
 			if (list.isEmpty() || fileSaved) {
+				
+				//Exit
 				System.out.println("Goodbye!");
 				System.exit(0);
-			} else {
-				System.out
-				.println("File not saved! Please save before closing");
+			} 
+			
+			//If not saved...
+			else {
+				System.out.println("File not saved! " +
+						"Please save before closing");
 				return;
 			}
 		}
 
+		//'mc #' or 'mc $' moves the current line indicator to
+		//a given position
 		if (cmd.equals("mc")) {
 
+			//For an empty list...
 			if(list.isEmpty()) {
 				System.out.println("Empty list. There is nothing to move!");
 				return;
 			}
 
 			if (param1 != null) {
+				
+				//If given 'mc $' move to last line
 				if (param1.equals("$")) {
+					
+					//Move the current line to the last line
 					moveCurrentLineTo(numLines);
+					
+					//The file has been edited
 					fileSaved = false;
+					
 					if(!undo)
 						saveCommand(commandIndex++, cmd, param1, param2);
 					return;
 				}
 
+				//Move to given line
 				else {
+					
+					//Attempt to parse the parameter
 					try {
 						int line = Integer.parseInt(param1);
 
+						//Ensure that it is a valid line
 						if (line <= 0 || line > numLines) {
-							System.out
-							.println("Invalid parameters, try: mc #, where # starts at '1'");
+							System.out.println("Invalid parameters, " +
+									"try: mc #, where # starts at '1'");
 							return;
-						} else {
+						} 
+						
+						else {
+							
+							//Move the current line to the given line
 							moveCurrentLineTo(line);
+							
+							//The file has been edited
 							fileSaved = false;
+							
 							if(!undo)
 								saveCommand(commandIndex++, cmd, param1, param2);
 							return;
 						}
 					} catch (NumberFormatException e) {
-						System.out
-						.println("Invalid parameters, try: mc # or mc $");
+						System.out.println("Invalid parameters, " +
+								"try: mc # or mc $");
 						return;
 					}
 				}
-			} else {
-				System.out.println("Invalid parameters, try: mc # or mc $");
+			} 
+			
+			//If given no parameter
+			else {
+				System.out.println("Invalid parameters, " +
+						"try: mc # or mc $");
 				return;
 			}
 		}
 
+		//'fr <string> <string>' replaces all instances of the first
+		//string with the second string
 		if (cmd.equals("fr")) {
+			
+			//If given two strings
 			if(param1 != null && param2 != null) {
+				
+				//Replace all instances of param1 with param2
+				//and store how many changes were made
 				int numFound = findReplace(param1, param2);
 				
 				if(!undo)
 					saveCommand(commandIndex++, cmd, param1, param2);
 
+				//Display how many instances were replaced
 				if(numFound > 0) {
-					System.out.println("All " + numFound + " instances of " + param1 + " were replaced with " + param2);
+					System.out.println("All " + numFound + " instances of "
+							+ param1 + " were replaced with " + param2);
+					
+					//The file has been edited
 					fileSaved = false;
 					return;
 				}
 
+				//Nothing was replaced
 				if(numFound == 0) {
-					System.out.println("No instances of " + param1 + " were found!");
+					System.out.println("No instances of " + 
+							param1 + " were found!");
 					return;
 				}
 			}
+			
 			else {
-				System.out.println("Invalid parameters, try: fr <string1> <string2>");
+				System.out.println("Invalid parameters, " +
+						"try: fr <string1> <string2>");
 				return;
 			}
 		}
 
+		//'sw #' or 'sw $' switches the current line with the given line
 		if (cmd.equals("sw")) {
 
+			//The list is empty...
 			if(list.isEmpty()) {
-				System.out.println("Empty list. There is nothing to switch!");
+				System.out.println("Empty list. " +
+						"There is nothing to switch!");
 				return;
 			}
 
+			//If given a valid parameter
 			if (param1 != null) {
+				
+				//'sw $' switches with the last line
 				if (param1.equals("$")) {
+					
+					//Switch with the last line
 					switchCurrentLineWith(numLines);
+					
+					//The file has been edited
 					fileSaved = false;
+					
 					if(!undo)
 						saveCommand(commandIndex++, cmd, param1, param2);
 					return;
 				}
 
+				//'sw #' switches with the given line
 				else {
+					
+					//Attempt to parse the parameter
 					try {
 						int line = Integer.parseInt(param1);
 
+						//Ensure the line exists
 						if (line <= 0 || line > numLines) {
-							System.out
-							.println("Invalid parameters, try: sw #, where # starts at '1'");
+							System.out.println("Invalid parameters, try: " +
+									"sw #, where # starts at '1'");
 							return;
-						} else {
+						} 
+						
+						else {
+							
+							//Switch with the given line
 							switchCurrentLineWith(line);
+							
+							//The file has been edited
 							fileSaved = false;
+							
 							if(!undo)
 								saveCommand(commandIndex++, cmd, param1, param2);
 							return;
 						}
 					} catch (NumberFormatException e) {
-						System.out
-						.println("Invalid parameters, try: sw # or sw $");
+						System.out.println("Invalid parameters, " +
+								"try: sw # or sw $");
 						return;
 					}
 				}
@@ -469,12 +646,18 @@ public class ViLiteEditor implements IEditor {
 			}
 		}
 
+		//'ud' undoes the last command
 		if (cmd.equals("ud")) {
+			
+			//If any previous commands have been executed...
 			if(commandIndex > 0)
+				
+				//Undo the last command
 				undo();
 			return;
 		}
 
+		//The command was not recognized...
 		if (cmd != null)
 			System.out.println("Command " + cmd
 					+ " not recognized.  Type 'h' for help");
@@ -551,6 +734,8 @@ public class ViLiteEditor implements IEditor {
 	******************************************************************/
 	public void moveUp(int nbrOfPositions) {
 		for (int i = 0; i < nbrOfPositions; i++)
+			
+			//Stop at the top of the list
 			if (currentLine != 1 && !list.isEmpty())
 				currentLine--;
 	}
@@ -562,24 +747,35 @@ public class ViLiteEditor implements IEditor {
 	******************************************************************/
 	public void moveDown(int nbrOfPositions) {
 		for (int i = 0; i < nbrOfPositions; i++)
+			
+			//Stop at the bottom of the list
 			if (currentLine != numLines && !list.isEmpty())
 				currentLine++;
 	}
 
 	/******************************************************************
 	Removes a given number of lines starting at the current line until
-	reaching the end of the file (if applicable).
+	reaching the end of the file and then continues removing lines
+	above (if applicable).
 	@param the number of lines to remove
 	******************************************************************/
 	public void remove(int nbrLinesToRemove) {
 		for (int i = 0; i < nbrLinesToRemove; i++) {
+			
+			//If at the end of the list start removing lines above
 			if (currentLine == numLines) {
+				
+				//Remove the current line
 				list.remove(currentLine);
+				
+				//Decrement both the current line indicator and the
+				//number of lines
 				currentLine--;
 				numLines--;
 				return;
 			}
 
+			//Remove the element and decrement the number of lines
 			else {
 				list.remove(currentLine);
 				numLines--;
@@ -591,7 +787,14 @@ public class ViLiteEditor implements IEditor {
 	Completely clears the list.
 	******************************************************************/
 	public void clear() {
+		
+		//Clear the list
 		list.clear();
+		
+		//Set both the number of lines and the current line indicator
+		//to zero
+		numLines = 0;
+		currentLine = 0;
 	}
 
 	/******************************************************************
@@ -601,6 +804,8 @@ public class ViLiteEditor implements IEditor {
 	@param the name of the file which is to be saved
 	******************************************************************/
 	public void save(String filename) {
+		
+		//Create the given filepath in the user's directory
 		String filepath = "/users/Joe/" + filename;
 		File saveFile = new File(filepath);
 		FileWriter saveFileWriter;
@@ -668,53 +873,78 @@ public class ViLiteEditor implements IEditor {
 			return;
 		}
 
+		//Initialize temp variables
 		String tempCurrentLineS = "";
 		String tempNumLinesS = "";
 
 		int tempCurrentLine = 0;
 		int tempNumLines = 0;
 
+		//Get the checksum
 		int checksum = scanner.nextInt();
-
+		
+		//Verify the checksum
 		if (checksum == 0x55) {
 
+			//Clear the list
 			list.clear();
 
+			//Attempt to parse the current line and number of lines
 			try {
 				tempCurrentLineS = scanner.next();
 				tempNumLinesS = scanner.next();
 
+				//The file was saved as an empty file
 				if (tempCurrentLineS == null)
 					return;
 
 				else {
+					
+					//Attempt to parse the current line and number of lines
 					try {
 						tempCurrentLine = Integer.parseInt(tempCurrentLineS);
 						tempNumLines = Integer.parseInt(tempNumLinesS);
 					} catch (Exception e) {
-						System.out
-						.println("Error! File is corrupt. Reverting to previous save...");
+						
+						//In case of corrput data, load in the previous
+						//save!
+						System.out.println("Error! File is corrupt. " +
+								"Reverting to previous save...");
+						
+						//Load the previous save
 						load(".viliteBackup");
+						
 						System.out.println("Done.");
+						
+						//Close the scanner
 						scanner.close();
 						return;
 					}
 				}
 			} catch (Exception e) {
-				// Do I need to catch anything?
+				//Do I need to catch anything?
 			}
 
 			// If there is another entry...
 			for (int i = 0; i < tempNumLines; i++) {
+				
+				//Add a space to the data... just for appearances
 				String temp = " " + scanner.next();
+				
+				//Add the new data
 				insertEnd(temp);
 			}
 
+			//Set the properties to the temp values
 			currentLine = tempCurrentLine;
 			numLines = tempNumLines;
+			
+			//The file has been edited
 			fileSaved = false;
-		} else
-			System.out.println("Error! Incorrect file  type!");
+		} 
+		
+		else
+			System.out.println("Error! Incorrect file type!");
 
 		// Close the file
 		scanner.close();
@@ -730,19 +960,37 @@ public class ViLiteEditor implements IEditor {
 	@param string pattern to replace the previous
 	******************************************************************/
 	public int findReplace(String str1, String str2) {
+		
+		//Nothing found yet...
 		int numFound = 0;
 
 		for(int i = 1; i <= numLines; i++) {
+			
+			//If the line contains the search string...
 			if(list.get(i).contains(str1)) {
+				
+				//The last index of the search string
 				int lastIndex = 0;
+				
+				//Updates the number found (in case of multiple words
+				//being found and replaced in one line)
 				while(lastIndex != -1) {
+					
+					//Get the last index of the search string starting
+					//at the last, last index
 					lastIndex = list.get(i).indexOf(str1, lastIndex);
+					
 					if(lastIndex != -1) {
+						
+						//We got another one!
 						numFound++;
+						
+						//Increment the last index
 						lastIndex += str1.length();
 					}
 				}
 
+				//Replace the old string with the new one
 				String newLine = list.get(i).replaceAll(str1, str2);
 				list.set(i, newLine);
 			}

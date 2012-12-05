@@ -1,11 +1,12 @@
 package vilite;
 
 /**********************************************************************
- * Represents a node in a linklist to be incorporated by the MyLinkedList class.
- * 
- * @author Joe Gibson, Ryan Zondervan
- * @version 11/7/2012
- *********************************************************************/
+Node.java implements a node to be referenced by the MyLinkedList class.
+A node consists of a data string and a pointer to a 'next' node.
+
+@author Joe Gibson, Ryan Zondervan
+@version 12/5/2012
+**********************************************************************/
 public class Node implements INode {
 
 	/** The data within a node */

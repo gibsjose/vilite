@@ -1,12 +1,12 @@
 package vilite;
 
 /**********************************************************************
- * Interface for a node in a linklist. All commands to be overridden
- * in the Node class. 
- * 
- * @author Joe Gibson, Ryan Zondervan
- * @version 11/7/2012
- *********************************************************************/
+INode.java implements the node interface. The methods are to be
+overridden by the Node class.
+
+@author Joe Gibson, Ryan Zondervan
+@version 12/5/2012
+**********************************************************************/
 public interface INode {
 	/* returns the data stored in this node */
 	String getData();

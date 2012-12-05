@@ -15,7 +15,7 @@ is currently working. Implements the functionality of Link Lists.
 
 @author Joe Gibson, Ryan Zondervan
 @version 12/5/2012
- *********************************************************************/
+**********************************************************************/
 public class ViLiteEditor implements IEditor {
 
 	/** Scanner for the command input */
@@ -1006,37 +1006,59 @@ public class ViLiteEditor implements IEditor {
 	******************************************************************/
 	public void moveCurrentLineTo(int lineNbr) {
 
+		//Store the data at the current line
 		String temp = list.get(currentLine);
 
+		//Move to it's own position...
 		if (lineNbr == currentLine)
 			return;
 
+		//Move to the first position
 		if (lineNbr == 1) {
+			
+			//Remove the current line
 			remove(1);
+			
+			//Increment the number of lines
 			numLines++;
+			
+			//Add the current item at the top of the list
 			list.add(1, temp);
 			return;
 		}
 
+		//Move to the bottom line
 		if (lineNbr == numLines) {
+			
+			//Remove the current line
 			remove(1);
+			
+			//Increment the number of lines
 			numLines++;
+			
+			//Add the current item at the bottom of the list
 			list.add(numLines, temp);
 			return;
 		}
 
+		//Store whether the last item in the list is the one being moved
 		boolean isLast = false;
-
 		if(currentLine == numLines)
 			isLast = true;
 
+		//Remove the current line
 		remove(1);
+		
+		//Increment the number of lines
 		numLines++;
+		
+		//Add the current item at the specified place in the list
 		list.add(lineNbr, temp);
 
+		//Increment the currentLine if the last item was the one
+		//that moved
 		if(isLast)
 			currentLine++;
-
 		return;
 	}
 
@@ -1047,29 +1069,58 @@ public class ViLiteEditor implements IEditor {
 	******************************************************************/
 	public void switchCurrentLineWith(int lineNbr) {
 
+		//Store the string at the destination
 		String destTemp = list.get(lineNbr);
 
+		//Temp current line
 		int curr = currentLine;
 
+		//Swap with itself...
 		if(lineNbr == currentLine)
 			return;
 
+		//If swapping with something above itself...
 		if(lineNbr < currentLine) {
+			
+			//Remove the target item
 			list.remove(lineNbr);
+			
+			//Decrement current line indicator
 			currentLine --;
+			
+			//Move the current line to the desired position
 			moveCurrentLineTo(lineNbr);
+			
+			//Add the old data back at the old current line
 			list.add(curr, destTemp);
+			
+			//Update the current line
 			currentLine = curr;
 			return;
 		}
 
+		//If swapping with something below itself...
 		else {
+			
+			//Remove the target item
 			list.remove(lineNbr);
+			
+			//If last item...
 			if(lineNbr == numLines)
+				
+				//Move the current line
 				moveCurrentLineTo(lineNbr);
+			
+			//Otherwise...
 			else 
+				
+				//Move the current line
 				moveCurrentLineTo(lineNbr - 1);
+			
+			//Add the old data back at the old current line
 			list.add(curr, destTemp);
+			
+			//Update the current line
 			currentLine = curr;
 			return;
 		}
@@ -1083,21 +1134,37 @@ public class ViLiteEditor implements IEditor {
 	******************************************************************/
 	public void undo() {
 		
+		//Clear the list
 		clear();
 		
-		commandIndex--;
+		//Decrement the command index to execute all commands
+		//except for the last one
+		if(commandIndex > 0)
+			commandIndex--;
 		
+		//Remove the last command from the list
+		//Note: Wouldn't do this if redo was to be implemented...
+		commandList.remove(commandList.size() - 1);
+		
+		//Index
 		int i = 0;
 		
+		//Iterate through each command except the last command and
+		//simulate a user inputting each one
 		while(i < commandIndex) {
+			
+			//Get the command
 			Command command = commandList.get(i);
 			
+			//Parse the command
 			String cmd = command.getCmd();
 			String param1 = command.getParam1();
 			String param2 = command.getParam2();
 			
+			//Create the command string
 			String cmdString = cmd;
 			
+			//Build the command string
 			if(param1 != "-1") {
 				cmdString += ((cmd.equals("e") || cmd.equals("i") || cmd.equals("b")) ? param1 : " " + param1);
 				
@@ -1105,8 +1172,10 @@ public class ViLiteEditor implements IEditor {
 					cmdString += " " + param2;
 			}
 			
+			//Simulate each command
 			processCommand(cmdString, true);
 			
+			//Update the index
 			i++;
 		}
 	}
@@ -1119,12 +1188,18 @@ public class ViLiteEditor implements IEditor {
 	private void display(int start, int end) {
 		for (int i = start; i <= end; i++) {
 
+			//Get out
 			if (i > numLines)
 				return;
 
+			//Display each entry
 			if (list.get(i) != null) {
+				
+				//Display the current line indicator and current line
 				if (i == currentLine)
 					System.out.println("==> \t" + list.get(i));
+				
+				//Display a normal line
 				else
 					System.out.println("\t" + list.get(i));
 			}
@@ -1168,9 +1243,12 @@ public class ViLiteEditor implements IEditor {
 	@param the second parameter
 	******************************************************************/
 	private void saveCommand(int index, String cmd, String param1, String param2) {
+		
+		//Create temp parameters
 		String paramA;
 		String paramB;
 		
+		//Assign a -1 to null parameters
 		if(param1 == null)
 			paramA = "-1";
 		else
@@ -1181,8 +1259,10 @@ public class ViLiteEditor implements IEditor {
 		else
 			paramB = param2;
 		
+		//Create a new command with the given data
 		Command command = new Command(commandIndex, cmd, paramA, paramB);
 		
+		//Add the new command to the command list
 		commandList.add(command);
 	}
 
@@ -1192,10 +1272,18 @@ public class ViLiteEditor implements IEditor {
 	@param the line arguments
 	******************************************************************/
 	public static void main(String[] args) {
+		
+		//Create a new vilite program
 		ViLiteEditor vilite = new ViLiteEditor();
 
+		//Run the program...
 		while (true) {
-			vilite.run();
+			try {
+				vilite.run();
+			} catch (NoSuchElementException e) {
+				//Thrown if you hit the shiny big red button...
+				System.exit(0);
+			}
 		}
 	}
 }

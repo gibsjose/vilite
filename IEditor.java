@@ -3,11 +3,12 @@ package vilite;
 import java.io.IOException;
 
 /**********************************************************************
- * This interface holds the methods for the ViLiteEditor class to override.
- * 
- * @author Joe Gibson, Ryan Zondervan
- * @version 11/7/2012
- *********************************************************************/
+IEditor.java implements the bulk of the program methods.  The methods
+are to be overridden by the ViLiteEditor class.
+
+@author Joe Gibson, Ryan Zondervan
+@version 12/5/2012
+**********************************************************************/
 public interface IEditor {
 
 	/* reads and processes each command until exit */

@@ -1,12 +1,12 @@
 package vilite;
 
 /**********************************************************************
- * The Linked List interface. Methods are to be overridden in the MyLinkedList
- * class.
- * 
- * @author Joe Gibson, Ryan Zondervan
- * @version 11/7/2012
- *********************************************************************/
+ILinkedList.java implements the linked list interface. Methods are to
+be overridden by the MyLinkedList class.
+
+@author Joe Gibson, Ryan Zondervan
+@version 12/5/2012
+**********************************************************************/
 public interface ILinkedList {
 
 	/* adds the given element to the end of the list */

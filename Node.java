@@ -16,49 +16,55 @@ public class Node implements INode {
 	private Node next;
 
 	/******************************************************************
-	 * Empty Node constructor
-	 ******************************************************************/
+	Constructs an empty node.
+	******************************************************************/
 	public Node() {
 
 	}
 
+	
 	/******************************************************************
-	 * Node constructor passing in data and a next node for a single linklist.
-	 * 
-	 * @param String
-	 *            data the data within the node
-	 * @param Node
-	 *            next the next node in the linklist
-	 ******************************************************************/
+	Constructs a node given a data string and a next pointer.
+	@param the data string
+	@param the next pointer
+	******************************************************************/
 	public Node(String data, Node next) {
 		this.data = data;
 		this.next = next;
 	}
 
+	
 	/******************************************************************
-	 * Get and set methods for Data.
-	 * 
-	 * @param String
-	 *            data the data in the node
-	 ******************************************************************/
+	Returns the data string.
+	@return the data string
+	******************************************************************/
 	public String getData() {
 		return data;
 	}
 
+	
+	/******************************************************************
+	Sets the data string.
+	@param the data string
+	******************************************************************/
 	public void setData(String data) {
 		this.data = data;
 	}
 
+	
 	/******************************************************************
-	 * Get and set methods for the next node in the linklist.
-	 * 
-	 * @param INode
-	 *            next the next node in the linklist
-	 ******************************************************************/
+	Returns the next pointer.
+	@return the next pointer
+	******************************************************************/
 	public INode getNext() {
 		return next;
 	}
 
+	
+	/******************************************************************
+	Sets the next pointer.
+	@param the next pointer
+	******************************************************************/
 	public void setNext(INode next) {
 		this.next = (Node) next;
 	}

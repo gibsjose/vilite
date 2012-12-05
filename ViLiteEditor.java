@@ -42,7 +42,6 @@ public class ViLiteEditor implements IEditor {
 	/** Index used for undo method */
 	private int commandIndex;
 	
-
 	/******************************************************************
 	Constructs a blank ViLiteEditor.
 	******************************************************************/
@@ -100,7 +99,8 @@ public class ViLiteEditor implements IEditor {
 			return;
 		}
 
-		// Check for b, i, and e, which are a command followed by a sentence
+		// Check for b, i, and e, which are a command followed
+		//by a sentence
 		if (cmd.equals("b")) {
 			
 			String sentence = null;
@@ -109,7 +109,8 @@ public class ViLiteEditor implements IEditor {
 			try {
 				sentence = scanner.nextLine();
 			} catch (NoSuchElementException e) {
-				System.out.println("Invalid parameter, try: b <sentence>");
+				System.out.println("Invalid parameter, " +
+						"try: b <sentence>");
 				return;
 			}
 
@@ -143,7 +144,8 @@ public class ViLiteEditor implements IEditor {
 			try {
 				sentence = scanner.nextLine();
 			} catch (NoSuchElementException e) {
-				System.out.println("Invalid parameter, try: i <sentence>");
+				System.out.println("Invalid parameter, " +
+						"try: i <sentence>");
 				return;
 			}
 
@@ -177,7 +179,8 @@ public class ViLiteEditor implements IEditor {
 			try {
 				sentence = scanner.nextLine();
 			} catch (NoSuchElementException e) {
-				System.out.println("Invalid parameter, try: e <sentence>");
+				System.out.println("Invalid parameter, " +
+						"try: e <sentence>");
 				return;
 			}
 
@@ -230,7 +233,8 @@ public class ViLiteEditor implements IEditor {
 					fileSaved = false;
 					
 					if(!undo)
-						saveCommand(commandIndex++, cmd, param1, param2);				
+						saveCommand(commandIndex++, cmd, 
+								param1, param2);				
 					return;
 
 				} catch (NumberFormatException e) {
@@ -272,11 +276,13 @@ public class ViLiteEditor implements IEditor {
 					fileSaved = false;
 					
 					if(!undo)
-						saveCommand(commandIndex++, cmd, param1, param2);					
+						saveCommand(commandIndex++, cmd, 
+								param1, param2);					
 					return;
 
 				} catch (NumberFormatException e) {
-					System.out.println("Invalid parameters, try: u #");
+					System.out.println("Invalid parameters, " +
+							"try: u #");
 					return;
 				}
 			}
@@ -317,11 +323,13 @@ public class ViLiteEditor implements IEditor {
 						fileSaved = false;
 						
 						if(!undo)
-							saveCommand(commandIndex++, cmd, param1, param2);				
+							saveCommand(commandIndex++, cmd, 
+									param1, param2);				
 						return;
 
 					} catch (NumberFormatException e) {
-						System.out.println("Invalid parameters, try: r #");
+						System.out.println("Invalid parameters, " +
+								"try: r #");
 						return;
 					}
 				}
@@ -336,7 +344,8 @@ public class ViLiteEditor implements IEditor {
 					fileSaved = false;
 					
 					if(!undo)
-						saveCommand(commandIndex++, cmd, param1, param2);
+						saveCommand(commandIndex++, cmd, 
+								param1, param2);
 					return;
 				}
 			}
@@ -365,7 +374,8 @@ public class ViLiteEditor implements IEditor {
 					if (list.isEmpty())
 						System.out.println("No data to display!");
 					else
-						System.out.println("==> \t" + list.get(currentLine));
+						System.out.println("==> \t" +
+								list.get(currentLine));
 					
 					return;
 				}
@@ -419,7 +429,8 @@ public class ViLiteEditor implements IEditor {
 				//Save the file
 				save(param1);
 			else
-				System.out.println("Invalid parameters, try: s <filename>");
+				System.out.println("Invalid parameters, " +
+						"try: s <filename>");
 
 			return;
 		}
@@ -440,7 +451,8 @@ public class ViLiteEditor implements IEditor {
 					saveCommand(commandIndex++, cmd, param1, param2);
 			}
 			else
-				System.out.println("Invalid parameters, try: l <filename>");
+				System.out.println("Invalid parameters, " +
+						"try: l <filename>");
 
 			return;
 		}
@@ -478,7 +490,8 @@ public class ViLiteEditor implements IEditor {
 
 			//For an empty list...
 			if(list.isEmpty()) {
-				System.out.println("Empty list. There is nothing to move!");
+				System.out.println("Empty list. " +
+						"There is nothing to move!");
 				return;
 			}
 
@@ -494,7 +507,8 @@ public class ViLiteEditor implements IEditor {
 					fileSaved = false;
 					
 					if(!undo)
-						saveCommand(commandIndex++, cmd, param1, param2);
+						saveCommand(commandIndex++, cmd, 
+								param1, param2);
 					return;
 				}
 
@@ -521,7 +535,8 @@ public class ViLiteEditor implements IEditor {
 							fileSaved = false;
 							
 							if(!undo)
-								saveCommand(commandIndex++, cmd, param1, param2);
+								saveCommand(commandIndex++, cmd, 
+										param1, param2);
 							return;
 						}
 					} catch (NumberFormatException e) {
@@ -579,7 +594,8 @@ public class ViLiteEditor implements IEditor {
 			}
 		}
 
-		//'sw #' or 'sw $' switches the current line with the given line
+		//'sw #' or 'sw $' switches the current line 
+		//with the given line
 		if (cmd.equals("sw")) {
 
 			//The list is empty...
@@ -602,7 +618,8 @@ public class ViLiteEditor implements IEditor {
 					fileSaved = false;
 					
 					if(!undo)
-						saveCommand(commandIndex++, cmd, param1, param2);
+						saveCommand(commandIndex++, cmd, 
+								param1, param2);
 					return;
 				}
 
@@ -615,8 +632,8 @@ public class ViLiteEditor implements IEditor {
 
 						//Ensure the line exists
 						if (line <= 0 || line > numLines) {
-							System.out.println("Invalid parameters, try: " +
-									"sw #, where # starts at '1'");
+							System.out.println("Invalid parameters, " +
+									"try: sw #, where # starts at '1'");
 							return;
 						} 
 						
@@ -629,7 +646,8 @@ public class ViLiteEditor implements IEditor {
 							fileSaved = false;
 							
 							if(!undo)
-								saveCommand(commandIndex++, cmd, param1, param2);
+								saveCommand(commandIndex++, cmd, 
+										param1, param2);
 							return;
 						}
 					} catch (NumberFormatException e) {
@@ -641,7 +659,8 @@ public class ViLiteEditor implements IEditor {
 			} 
 
 			else {
-				System.out.println("Invalid parameters, try: sw # or sw $");
+				System.out.println("Invalid parameters, " +
+						"try: sw # or sw $");
 				return;
 			}
 		}
@@ -663,6 +682,7 @@ public class ViLiteEditor implements IEditor {
 					+ " not recognized.  Type 'h' for help");
 	}
 
+	
 	/******************************************************************
 	Returns the number of lines in the file.
 	@return the number of lines in the file
@@ -671,6 +691,7 @@ public class ViLiteEditor implements IEditor {
 		return numLines;
 	}
 
+	
 	/******************************************************************
 	Returns the current line number.
 	@return the current line number 	
@@ -679,6 +700,7 @@ public class ViLiteEditor implements IEditor {
 		return currentLine;
 	}
 
+	
 	/******************************************************************
 	Returns the data at the specified line in the list.
 	@param the line in the list
@@ -688,6 +710,7 @@ public class ViLiteEditor implements IEditor {
 		return list.get(lineNbr);
 	}
 
+	
 	/******************************************************************
 	Returns an array of data from the specified range in the list.
 	@param the starting line
@@ -703,6 +726,7 @@ public class ViLiteEditor implements IEditor {
 		return lines;
 	}
 
+	
 	/******************************************************************
 	Inserts a line before the current line.
 	@param the data to insert before the current line
@@ -711,6 +735,7 @@ public class ViLiteEditor implements IEditor {
 		list.add(currentLine, line);
 	}
 
+	
 	/******************************************************************
 	Inserts a line after the current line.
 	@param the data to insert after the current line
@@ -719,6 +744,7 @@ public class ViLiteEditor implements IEditor {
 		list.add((currentLine + 1), line);
 	}
 
+	
 	/******************************************************************
 	Inserts a line at the end of the file.
 	@param the data to insert at the end of the file
@@ -727,6 +753,7 @@ public class ViLiteEditor implements IEditor {
 		list.add(line);
 	}
 
+	
 	/******************************************************************
 	Moves the current line indicator up a given number of lines without
 	manipulating the data in the list.
@@ -740,6 +767,7 @@ public class ViLiteEditor implements IEditor {
 				currentLine--;
 	}
 
+	
 	/******************************************************************
 	Moves the current line indicator down a given number of lines without
 	manipulating the data in the list.
@@ -753,6 +781,7 @@ public class ViLiteEditor implements IEditor {
 				currentLine++;
 	}
 
+	
 	/******************************************************************
 	Removes a given number of lines starting at the current line until
 	reaching the end of the file and then continues removing lines
@@ -783,6 +812,7 @@ public class ViLiteEditor implements IEditor {
 		}
 	}
 
+	
 	/******************************************************************
 	Completely clears the list.
 	******************************************************************/
@@ -797,6 +827,7 @@ public class ViLiteEditor implements IEditor {
 		currentLine = 0;
 	}
 
+	
 	/******************************************************************
 	Saves the current list to a file given a filename. Writes a '0x55'
 	to the first line so loaded files can be known to have been saved
@@ -850,6 +881,7 @@ public class ViLiteEditor implements IEditor {
 		}
 	}
 
+	
 	/******************************************************************
 	Loads a file given the filename. Checks for the '0x55' header to
 	verify the file was saved correctly, and checks for corrupt header
@@ -900,10 +932,13 @@ public class ViLiteEditor implements IEditor {
 
 				else {
 					
-					//Attempt to parse the current line and number of lines
+					//Attempt to parse the current line and number 
+					//of lines
 					try {
-						tempCurrentLine = Integer.parseInt(tempCurrentLineS);
-						tempNumLines = Integer.parseInt(tempNumLinesS);
+						tempCurrentLine = Integer.
+								parseInt(tempCurrentLineS);
+						tempNumLines = Integer.
+								parseInt(tempNumLinesS);
 					} catch (Exception e) {
 						
 						//In case of corrput data, load in the previous
@@ -953,6 +988,7 @@ public class ViLiteEditor implements IEditor {
 		return;
 	}
 
+	
 	/******************************************************************
 	Replaces all instances of a given string pattern with a second
 	given string pattern.
@@ -999,6 +1035,7 @@ public class ViLiteEditor implements IEditor {
 		return numFound;
 	}
 
+	
 	/******************************************************************
 	Moves the current line to the specified line without modifying the
 	current line indicator.
@@ -1062,6 +1099,7 @@ public class ViLiteEditor implements IEditor {
 		return;
 	}
 
+	
 	/******************************************************************
 	Switches the current line with the specified line without modifying
 	the current line indicator.
@@ -1126,6 +1164,7 @@ public class ViLiteEditor implements IEditor {
 		}
 	}
 
+	
 	/******************************************************************
 	Undoes the last command (if the last command modified anything in
 	the list) by using the saveList. Essentially this clears the current
@@ -1166,7 +1205,8 @@ public class ViLiteEditor implements IEditor {
 			
 			//Build the command string
 			if(param1 != "-1") {
-				cmdString += ((cmd.equals("e") || cmd.equals("i") || cmd.equals("b")) ? param1 : " " + param1);
+				cmdString += ((cmd.equals("e") || cmd.equals("i") || 
+						cmd.equals("b")) ? param1 : " " + param1);
 				
 				if(param2 != "-1")
 					cmdString += " " + param2;
@@ -1180,6 +1220,7 @@ public class ViLiteEditor implements IEditor {
 		}
 	}
 
+	
 	/******************************************************************
 	Displays each line of data from the list in the specified range.
 	@param the first line that is displayed
@@ -1206,6 +1247,7 @@ public class ViLiteEditor implements IEditor {
 		}
 	}
 
+	
 	/******************************************************************
 	Displays a list of valid commands.
 	******************************************************************/
@@ -1230,9 +1272,11 @@ public class ViLiteEditor implements IEditor {
 				+ "mc $ = move current line to the last line\n"
 				+ "sw # = switch the current line with line #\n"
 				+ "sw $ = switch current line with last line\n"
-				+ "ud = undo operation\n" + "x = exit the editor (if saved)");
+				+ "ud = undo operation\n" + "x = exit the editor " +
+						"(if saved)");
 	}
 
+	
 	/******************************************************************
 	Private helper method to save each command (if said command changes
 	the data in the list) and it's parameters to an array to be used
@@ -1242,7 +1286,8 @@ public class ViLiteEditor implements IEditor {
 	@param the first parameter
 	@param the second parameter
 	******************************************************************/
-	private void saveCommand(int index, String cmd, String param1, String param2) {
+	private void saveCommand(int index, String cmd, 
+			String param1, String param2) {
 		
 		//Create temp parameters
 		String paramA;
@@ -1260,12 +1305,14 @@ public class ViLiteEditor implements IEditor {
 			paramB = param2;
 		
 		//Create a new command with the given data
-		Command command = new Command(commandIndex, cmd, paramA, paramB);
+		Command command = new Command(commandIndex, cmd, 
+				paramA, paramB);
 		
 		//Add the new command to the command list
 		commandList.add(command);
 	}
 
+	
 	/******************************************************************
 	The main method which runs until the exit command is issued or a
 	fatal error occurrs.

@@ -21,6 +21,7 @@ public class MyLinkedList implements ILinkedList {
 		top = null;
 	}
 
+	
 	/******************************************************************
 	Adds a new element to the bottom of the linked list.
 	@param the element to be added to the bottom of the list
@@ -49,6 +50,7 @@ public class MyLinkedList implements ILinkedList {
 		}
 	}
 
+	
 	/******************************************************************
 	Adds an element to the linked list at the specified index.
 	@param the index of where to add the item to the list
@@ -100,19 +102,21 @@ public class MyLinkedList implements ILinkedList {
 				}
 
 				//Insert the temp node
-				temp.setNext((INode) new Node(element, (Node) temp.getNext()));
+				temp.setNext((INode) new Node(element, 
+						(Node) temp.getNext()));
 				return;
 			}
 		}
 	}
 
+	
 	/******************************************************************
 	Removes an item at the specified index.
 	@param the index at which to remove the item
 	******************************************************************/
 	public String remove(int index) {
-		// Remember to call isEmpty() before calling this because I will assume
-		// the list is not empty
+		// Remember to call isEmpty() before calling this because I 
+		//will assume the list is not empty
 
 		// Case 1: Top element (index of 1)
 		if (index == 1) {
@@ -138,6 +142,7 @@ public class MyLinkedList implements ILinkedList {
 		return null;
 	}
 
+	
 	/******************************************************************
 	Returns the data of the element at the specified index.
 	@param the index of the desired element
@@ -173,6 +178,7 @@ public class MyLinkedList implements ILinkedList {
 		}
 	}
 
+	
 	/******************************************************************
 	Sets the data of the element at the specified index to a given
 	string.
@@ -205,6 +211,7 @@ public class MyLinkedList implements ILinkedList {
 		}
 	}
 
+	
 	/******************************************************************
 	Determines whether or not the list is empty (top pointing to null).
 	@return whether the list is empty
@@ -217,6 +224,7 @@ public class MyLinkedList implements ILinkedList {
 			return false;
 	}
 
+	
 	/******************************************************************
 	Returns the size of the list.
 	@return the size of the list
@@ -234,6 +242,7 @@ public class MyLinkedList implements ILinkedList {
 		return size;
 	}
 
+	
 	/******************************************************************
 	Clears the list. Here comes the garbage collector...
 	******************************************************************/
